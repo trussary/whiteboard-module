@@ -5,6 +5,27 @@ import type { NestedKeyOf } from "./utility-types";
 
 const COMPLETION_THRESHOLD = 85;
 
+/**
+ * EasyTeach fork (step 6, F-22 §6.2/§6.3): `vi-VN` is exempt from the
+ * completion gate below.
+ *
+ * The gate exists for excalidraw.com's own language *picker* — it is a
+ * reasonable bar for "should a stranger be offered this as a selectable
+ * option among 40". EasyTeach never shows that picker: `<Excalidraw
+ * langCode="vi-VN">` is the **only** language this product ever runs in
+ * (NFR-I18N-01), set unconditionally in `BoardShell.tsx`. Below the
+ * threshold — vi-VN measured 56% after this round's patch, nowhere near 85 —
+ * the gate does not protect a chooser from a half-finished option; it makes
+ * `languages.find((lang) => lang.code === "vi-VN")` return nothing at all, so
+ * `InitializeApp`/`updateLanguage` silently fall back to `defaultLang`
+ * (English) and the whole app renders in English regardless of anything in
+ * `locales/vi-VN.json`. That is a strictly worse outcome for a Vietnamese
+ * K-12 classroom than the per-key fallback `t()` already does for any string
+ * `vi-VN.json` is still missing (`findPartsForData(currentLangData, ...) ||
+ * findPartsForData(fallbackLangData, ...)`, this same file, below).
+ */
+const ALWAYS_AVAILABLE_LANGUAGE_CODES = new Set(["vi-VN"]);
+
 export interface Language {
   code: string;
   label: string;
@@ -65,8 +86,9 @@ export const languages: Language[] = [
   ]
     .filter(
       (lang) =>
+        ALWAYS_AVAILABLE_LANGUAGE_CODES.has(lang.code) ||
         (percentages as Record<string, number>)[lang.code] >=
-        COMPLETION_THRESHOLD,
+          COMPLETION_THRESHOLD,
     )
     .sort((left, right) => (left.label > right.label ? 1 : -1)),
 ];
