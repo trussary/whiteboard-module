@@ -1,0 +1,93 @@
+@import "../css/variables.module.scss";
+
+/*
+ * EasyTeach's overrides on the native toolbar (F-22 / FR-22-25).
+ *
+ * A separate file rather than edits scattered through `ToolIcon.scss` and
+ * `Toolbar.scss`, and that is a maintenance decision, not a stylistic one:
+ * NFR-MAINT-12 requires `git diff <upstream>..easyteach-main` to enumerate the
+ * whole EasyTeach delta and to stay readable in one review. One new file plus a
+ * one-line `@import` is the smallest shape that satisfies it, and it is also
+ * the shape that survives an upstream bump — a merge conflict here is a real
+ * conflict, not a diff-noise collision inside a file upstream keeps churning.
+ *
+ * Every colour is an EasyTeach tier-3 token (ADR-021, NFR-UX-11). The tokens
+ * are defined by `@easyteach/board-bridge`'s `board-tokens.css`, which the app
+ * loads on the board root above this subtree, so `var()` resolves here without
+ * this file needing to know anything about which board face is active.
+ */
+
+.excalidraw {
+  .App-toolbar {
+    /*
+     * NFR-UX-03: every control is at least 44 px.
+     *
+     * Native `ToolIcon` is 36 px, which is the single most-pressed control on
+     * the board sitting 8 px under the floor — and it is pressed by a teacher
+     * standing at a wall-mounted board, at arm's length, facing a class rather
+     * than the screen. `min-*` rather than a fixed size so a caption can grow
+     * the button later without this rule fighting it.
+     */
+    .ToolIcon {
+      min-width: 44px;
+      min-height: 44px;
+    }
+
+    .ToolIcon:hover {
+      background: var(--et-shellbar-hover);
+    }
+
+    .ToolIcon[aria-pressed="true"] {
+      background: var(--et-shellbar-active-surface);
+      color: var(--et-shellbar-active-label);
+    }
+
+    /*
+     * CLAUDE.md §4 invariant 2 — the toolbar half.
+     *
+     * The four AI slots (`mathSolve`, `mathSteps`, `graph`, `shapeNormalise`)
+     * are inert by profile data because no LLM-produced calculation may reach a
+     * classroom screen without independent SymPy verification (ADR-004). The
+     * wheel already draws them as unavailable and says so through
+     * `aria-disabled`; the toolbar is the *other* surface that draws them, and
+     * a surface that draws one has to draw it unavailable too.
+     *
+     * **Four separate signals, deliberately, and none of them is colour alone.**
+     * Muting is invisible to a teacher who cannot distinguish it (NFR-A11Y-03),
+     * so the dashed rim carries the same statement in shape; removing the hover
+     * response carries it in behaviour; and `aria-disabled` — set in the markup,
+     * which is what this selector keys off — carries it to a screen reader. The
+     * Vietnamese reason lives in the button's tooltip, from the slot's
+     * `reasonKey`, so the teacher is told what to do meanwhile rather than only
+     * that something is off (F-22 §4.6, NFR-UX-05).
+     */
+    .ToolIcon[aria-disabled="true"] {
+      color: var(--et-shellbar-label-muted);
+      cursor: default;
+      outline: 1.5px dashed var(--et-shellbar-label-muted);
+      outline-offset: -3px;
+    }
+
+    .ToolIcon[aria-disabled="true"]:hover {
+      /* No press affordance at all: an inert control that lights up under the
+         hand is telling the teacher it will work. */
+      background: transparent;
+    }
+
+    /*
+     * An EasyTeach tool sitting among Excalidraw's own, marked by an underline
+     * rather than by position. F-22 §13's rule is that the toolbar is one list
+     * with one order; a teacher should not have to learn which half of the
+     * island a command lives in.
+     */
+    .ToolIcon--easyteach {
+      box-shadow: inset 0 -2px 0 var(--et-shellbar-accent);
+    }
+
+    /* An inert EasyTeach tool drops the accent — the underline says "ours and
+       usable", and keeping it under a dashed rim would contradict the rim. */
+    .ToolIcon--easyteach[aria-disabled="true"] {
+      box-shadow: none;
+    }
+  }
+}

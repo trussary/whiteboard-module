@@ -1,5 +1,8 @@
 @import "open-color/open-color.scss";
 @import "../css/variables.module.scss";
+// EasyTeach overrides on this toolbar (FR-22-25). Kept in their own file so
+// `git diff <upstream>..easyteach-main` stays readable — see NFR-MAINT-12.
+@import "./EasyTeachToolbar.scss";
 
 .excalidraw {
   .App-toolbar {
