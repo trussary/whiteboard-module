@@ -110,12 +110,12 @@
     "excalidrawLib": "Thư viện Excalidraw",
     "decreaseFontSize": "Giảm cỡ chữ",
     "increaseFontSize": "Tăng cỡ chữ",
-    "unbindText": "",
-    "bindText": "",
-    "createContainerFromText": "",
+    "unbindText": "Tách chữ khỏi hình",
+    "bindText": "Gắn chữ vào hình",
+    "createContainerFromText": "Bọc chữ trong khung chứa",
     "link": {
       "edit": "Sửa liên kết",
-      "editEmbed": "",
+      "editEmbed": "Sửa nội dung nhúng",
       "create": "Tạo liên kết",
       "createEmbed": "",
       "label": "Liên kết",
@@ -124,7 +124,8 @@
     },
     "lineEditor": {
       "edit": "Điều chỉnh nét",
-      "exit": "Thoát chỉnh nét"
+      "exit": "Thoát chỉnh nét",
+      "editArrow": "Điều chỉnh mũi tên"
     },
     "elementLock": {
       "lock": "Khoá",
@@ -134,11 +135,15 @@
     },
     "statusPublished": "Đã đăng tải",
     "sidebarLock": "Giữ thanh bên luôn mở",
-    "selectAllElementsInFrame": "",
-    "removeAllElementsFromFrame": "",
+    "selectAllElementsInFrame": "Chọn tất cả trong khung",
+    "removeAllElementsFromFrame": "Đưa tất cả ra khỏi khung",
     "eyeDropper": "",
     "textToDiagram": "",
-    "prompt": ""
+    "prompt": "",
+    "toggleGrid": "Lưới nền",
+    "wrapSelectionInFrame": "Đưa lựa chọn vào khung",
+    "autoResize": "Tự co giãn",
+    "copyElementLink": "Sao chép liên kết đối tượng"
   },
   "library": {
     "noItems": "Chưa có món nào...",
@@ -172,7 +177,7 @@
     "darkMode": "Chế độ tối",
     "lightMode": "Chế độ sáng",
     "zenMode": "Chế độ zen",
-    "objectsSnapMode": "",
+    "objectsSnapMode": "Bắt dính vào đối tượng",
     "exitZenMode": "Thoát chể độ zen",
     "cancel": "Hủy",
     "clear": "Làm sạch",
@@ -313,9 +318,9 @@
     "title": ""
   },
   "exportDialog": {
-    "disk_title": "",
-    "disk_details": "",
-    "disk_button": "",
+    "disk_title": "Lưu ra tệp",
+    "disk_details": "Xuất dữ liệu bảng ra một tệp để nhập lại sau này.",
+    "disk_button": "Lưu ra tệp",
     "link_title": "",
     "link_details": "",
     "link_button": "",
@@ -350,7 +355,8 @@
     "zoomToSelection": "",
     "toggleElementLock": "",
     "movePageUpDown": "",
-    "movePageLeftRight": ""
+    "movePageLeftRight": "",
+    "cropStart": "Cắt ảnh"
   },
   "clearCanvasDialog": {
     "title": "Dọn canvas"
@@ -392,27 +398,27 @@
     "removeItemsFromLib": "Xóa món đã chọn khỏi thư viện"
   },
   "imageExportDialog": {
-    "header": "",
+    "header": "Xuất ảnh",
     "label": {
-      "withBackground": "",
-      "onlySelected": "",
-      "darkMode": "",
-      "embedScene": "",
-      "scale": "",
+      "withBackground": "Có nền",
+      "onlySelected": "Chỉ phần đã chọn",
+      "darkMode": "Chế độ tối",
+      "embedScene": "Nhúng dữ liệu bảng",
+      "scale": "Tỉ lệ",
       "padding": ""
     },
     "tooltip": {
-      "embedScene": ""
+      "embedScene": "Dữ liệu bảng sẽ được lưu kèm trong tệp PNG/SVG xuất ra để có thể khôi phục lại từ đó. Tệp xuất ra sẽ nặng hơn."
     },
     "title": {
-      "exportToPng": "",
-      "exportToSvg": "",
-      "copyPngToClipboard": ""
+      "exportToPng": "Xuất ra PNG",
+      "exportToSvg": "Xuất ra SVG",
+      "copyPngToClipboard": "Sao chép PNG vào bộ nhớ tạm"
     },
     "button": {
-      "exportToPng": "",
-      "exportToSvg": "",
-      "copyPngToClipboard": ""
+      "exportToPng": "PNG",
+      "exportToSvg": "SVG",
+      "copyPngToClipboard": "Sao chép"
     }
   },
   "encrypted": {
@@ -432,7 +438,8 @@
     "version": "",
     "versionCopy": "",
     "versionNotAvailable": "",
-    "width": ""
+    "width": "",
+    "fullTitle": "Thống kê canvas & hình"
   },
   "toast": {
     "addedToLibrary": "",
@@ -504,9 +511,9 @@
     },
     "modal": {
       "loadFromFile": {
-        "title": "",
-        "button": "",
-        "description": ""
+        "title": "Mở từ tệp",
+        "button": "Mở từ tệp",
+        "description": "Mở từ tệp sẽ <bold>thay thế toàn bộ nội dung hiện có</bold>.<br></br>Hãy sao lưu bản vẽ hiện tại bằng một trong các lựa chọn bên dưới trước khi tiếp tục."
       },
       "shareableLink": {
         "title": "",
@@ -521,5 +528,12 @@
     "description": "",
     "syntax": "",
     "preview": ""
+  },
+  "search": {
+    "title": "Tìm trên bảng",
+    "placeholder": "Tìm chữ trên bảng…",
+    "noMatch": "Không tìm thấy kết quả nào",
+    "singleResult": "kết quả",
+    "multipleResults": "kết quả"
   }
 }
