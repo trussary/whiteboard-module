@@ -72,8 +72,17 @@ export const MobileMenu = ({
     DefaultSidebarTriggerTunnel,
   } = useTunnels();
   const renderToolbar = () => {
+    // FR-007/FR-008/FR-009 (F-22, US3): same already-resolved value as
+    // `LayerUI`'s `FixedSideContainer`, read from `UIOptions.easyTeach`
+    // (see that field's doc comment in `types.ts`), never re-derived here
+    // and never gated on `.isLockedByFrame` — on the mobile DOM tree
+    // `resolveToolbarPosition` itself always resolves to `"bottom"`
+    // (`isLockedByFrame: true` only locks the *picker*), so this already
+    // renders correctly without checking the flag.
+    const toolbarPosition = UIOptions.easyTeach?.toolbarPosition ?? "top";
+
     return (
-      <FixedSideContainer side="top" className="App-top-bar">
+      <FixedSideContainer side={toolbarPosition} className="App-top-bar">
         {renderWelcomeScreen && <WelcomeScreenCenterTunnel.Out />}
         <Section heading="shapes">
           {(heading: React.ReactNode) => (

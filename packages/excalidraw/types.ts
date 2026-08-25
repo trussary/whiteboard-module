@@ -699,6 +699,17 @@ export type UIOptions = Partial<{
     nativeToolCaptions?: Record<string, string>;
     /** Rendered after the native tools, past the divider, in this order. */
     tools?: EasyTeachToolbarItem[];
+    /**
+     * Where `LayerUI`/`MobileMenu` anchor `FixedSideContainer` (F-22,
+     * FR-22-30/FR-007). Resolved by EasyTeach's own
+     * `resolveToolbarPosition` (board-bridge, not imported here — see
+     * `specs/003-board-shell-fork/contracts/toolbar-position-contract.md`)
+     * and passed down already-resolved: this field carries the *value*
+     * `resolveToolbarPosition` produced, never the raw settings/frame it was
+     * computed from, since the fork must not import board-bridge state.
+     * Omitted falls back to `"top"`, matching the pre-fork default.
+     */
+    toolbarPosition?: "top" | "bottom";
   };
   /** @deprecated does nothing. Will be removed in 0.15 */
   welcomeScreen?: boolean;

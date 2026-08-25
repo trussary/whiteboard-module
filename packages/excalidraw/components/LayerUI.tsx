@@ -232,8 +232,15 @@ const LayerUI = ({
       !appState.viewModeEnabled &&
       appState.openDialog?.name !== "elementLinkSelector";
 
+    // FR-007/FR-008 (F-22, US3): already resolved by board-bridge's
+    // `resolveToolbarPosition` and threaded in through `UIOptions.easyTeach`
+    // (see that field's doc comment in `types.ts`) — never re-derived here,
+    // and never gated on `.isLockedByFrame` (that flag is the Tuỳ chọn
+    // picker's own concern, not this render's).
+    const toolbarPosition = UIOptions.easyTeach?.toolbarPosition ?? "top";
+
     return (
-      <FixedSideContainer side="top">
+      <FixedSideContainer side={toolbarPosition}>
         <div className="App-menu App-menu_top">
           <Stack.Col gap={6} className={clsx("App-menu_top__left")}>
             {renderCanvasActions()}
