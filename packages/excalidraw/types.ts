@@ -621,11 +621,73 @@ export type CanvasActions = Partial<{
   saveAsImage: boolean;
 }>;
 
+/**
+ * One EasyTeach command injected into this toolbar (FR-22-25).
+ *
+ * **Plain data, and deliberately not a type imported from EasyTeach.** The
+ * EasyTeach shell package peer-depends on this one, so a type flowing the other
+ * way would close a dependency cycle. Everything the toolbar needs to draw a
+ * button is therefore passed in already resolved — the label and the reason
+ * arrive as finished Vietnamese strings, not as i18n keys, because the
+ * dictionary that can resolve them lives on the EasyTeach side.
+ */
+export type EasyTeachToolbarItem = {
+  /** Stable identifier, echoed back to `onSelect`. Never shown to a teacher. */
+  id: string;
+  /** Accessible name, in Vietnamese. Full, e.g. "Vẽ đồ thị". */
+  label: string;
+  /** Short caption drawn under the icon, e.g. "Đồ thị". */
+  caption: string;
+  icon: React.ReactNode;
+  /** Shown in the tooltip; never drawn on the button face. */
+  shortcut?: string;
+  /**
+   * A Vietnamese sentence naming why this command cannot run **and what to do
+   * instead**, or `null` when it can run.
+   *
+   * Its presence is what makes the button inert, and that is load-bearing:
+   * CLAUDE.md §4 invariant 2 requires the four AI commands (`mathSolve`,
+   * `mathSteps`, `graph`, `shapeNormalise`) to stay unavailable until a SymPy
+   * verification gate exists behind them. Modelling the reason rather than a
+   * boolean is what stops "disabled" from being expressible without an
+   * explanation a teacher can act on (F-22 §4.6, NFR-UX-05).
+   */
+  unavailableReason: string | null;
+  /** True while this command's own mode is the active one. */
+  isActive?: boolean;
+  onSelect: () => void;
+};
+
 export type UIOptions = Partial<{
   dockedSidebarBreakpoint: number;
   canvasActions: CanvasActions;
   tools: {
     image: boolean;
+  };
+  /**
+   * EasyTeach's additions to the native toolbar (ADR-023, FR-22-25).
+   *
+   * The whole point of the fork is that EasyTeach's tools sit *in* this
+   * toolbar beside the native ones rather than in a parallel UI drawn on top
+   * of a CSS-hidden original. This is the one seam that carries them, and it
+   * is one-way: data in, `onSelect` out, no import of EasyTeach from here.
+   */
+  easyTeach: {
+    /**
+     * Vietnamese caption for each native tool, keyed by `ToolType`.
+     *
+     * **Not read from this package's own `vi-VN` locale, on purpose.** That
+     * file is crowd-sourced: `toolBar.laser` and `toolBar.extraTools` are
+     * empty strings, and several entries use different words from the ones
+     * EasyTeach's own screens use for the same tool ("Lựa chọn" vs "Chọn",
+     * "Vẽ" vs "Bút"). A caption that is sometimes blank and sometimes a
+     * synonym is worse than no caption, so the strings come from EasyTeach's
+     * dictionary, which is the one place that has been through the copy
+     * review NFR-I18N-01 requires.
+     */
+    nativeToolCaptions?: Record<string, string>;
+    /** Rendered after the native tools, past the divider, in this order. */
+    tools?: EasyTeachToolbarItem[];
   };
   /** @deprecated does nothing. Will be removed in 0.15 */
   welcomeScreen?: boolean;

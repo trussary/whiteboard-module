@@ -30,6 +30,17 @@ type ToolButtonBaseProps = {
   className?: string;
   style?: CSSProperties;
   isLoading?: boolean;
+  /**
+   * Short Vietnamese word drawn under the icon (EasyTeach design change A2).
+   *
+   * Separate from `label`, which this component renders only when
+   * `showAriaLabel` is set and which upstream uses for a different job. A
+   * caption is always drawn when supplied, sits at F-22 §8.4's 14 px "Chữ
+   * phụ" tier, and is `aria-hidden` — the accessible name is still
+   * `aria-label`, so a screen reader gets the full "Vẽ đồ thị" rather than
+   * hearing the abbreviated "Đồ thị" twice.
+   */
+  caption?: string;
 };
 
 type ToolButtonProps =
@@ -198,6 +209,11 @@ export const ToolButton = React.forwardRef(
             </span>
           )}
         </div>
+        {props.caption && (
+          <span className="ToolIcon__caption" aria-hidden="true">
+            {props.caption}
+          </span>
+        )}
       </label>
     );
   },

@@ -312,6 +312,7 @@ export const ShapesSwitcher = ({
             name="editor-current-shape"
             title={`${capitalizeString(label)} — ${shortcut}`}
             keyBindingLabel={numericKey || letter}
+            caption={UIOptions.easyTeach?.nativeToolCaptions?.[value]}
             aria-label={capitalizeString(label)}
             aria-keyshortcuts={shortcut}
             data-testid={`toolbar-${value}`}
@@ -337,6 +338,64 @@ export const ShapesSwitcher = ({
         );
       })}
       <div className="App-toolbar__divider" />
+
+      {/*
+        EasyTeach's own commands, in this toolbar rather than in a parallel one
+        (ADR-023, FR-22-25). Rendered from `UIOptions.easyTeach.tools`, which is
+        plain data supplied by the host — see the type for why nothing is
+        imported from EasyTeach here.
+
+        `ShapesSwitcher` is rendered by BOTH DOM trees — `LayerUI` on the
+        desktop tree and `MobileMenu` on the mobile one — so these buttons
+        appear on both by construction rather than by remembering to add them
+        twice. Excalidraw switches trees on frame size
+        (`width < 730 || (height < 500 && width < 1000)`), and a toolbar that
+        lost half its commands on that switch is exactly the class of bug F-01
+        §6.5 records.
+      */}
+      {UIOptions.easyTeach?.tools?.map((tool) => {
+        const isUnavailable = tool.unavailableReason !== null;
+        return (
+          <button
+            key={tool.id}
+            type="button"
+            className={clsx("ToolIcon", "ToolIcon--easyteach", {
+              "ToolIcon--easyteach-active": tool.isActive,
+            })}
+            /*
+             * CLAUDE.md §4 invariant 2.
+             *
+             * `aria-disabled` rather than `disabled`, and the difference
+             * matters: a `disabled` button is removed from the accessibility
+             * tree and from the tab order entirely, so a teacher using a
+             * screen reader would not learn the command exists at all. F-22
+             * §4.6 requires the opposite — the command stays present, stays
+             * discoverable, and says why it cannot run. The click handler is
+             * withheld separately below, so the button is genuinely inert
+             * rather than merely styled as such.
+             */
+            aria-disabled={isUnavailable || undefined}
+            aria-pressed={!isUnavailable && tool.isActive ? true : undefined}
+            aria-keyshortcuts={tool.shortcut}
+            title={
+              tool.unavailableReason ??
+              (tool.shortcut ? `${tool.label} — ${tool.shortcut}` : tool.label)
+            }
+            aria-label={
+              isUnavailable
+                ? `${tool.label} — ${tool.unavailableReason}`
+                : tool.label
+            }
+            data-testid={`toolbar-easyteach-${tool.id}`}
+            onClick={isUnavailable ? undefined : tool.onSelect}
+          >
+            <div className="ToolIcon__icon">{tool.icon}</div>
+            <span className="ToolIcon__caption" aria-hidden="true">
+              {tool.caption}
+            </span>
+          </button>
+        );
+      })}
 
       <DropdownMenu open={isExtraToolsMenuOpen}>
         <DropdownMenu.Trigger

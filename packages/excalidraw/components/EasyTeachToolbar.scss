@@ -89,5 +89,99 @@
     .ToolIcon--easyteach[aria-disabled="true"] {
       box-shadow: none;
     }
+
+    .ToolIcon--easyteach-active {
+      background: var(--et-shellbar-active-surface);
+      color: var(--et-shellbar-active-label);
+    }
+
+    /*
+     * Design change A2 — a short Vietnamese word under every icon.
+     *
+     * The reason it is worth 13 px of toolbar height: an icon-only toolbar is
+     * a memory test, and the teacher taking it is standing at a wall board in
+     * front of a class, three weeks after the last training session. F-22 §8.4
+     * already defines a 14 px / 400 "Chữ phụ" tier, so this is that existing
+     * tier applied to a new surface, not a new type size — and 14 px is its
+     * floor, which NFR-UX-08's 24 px rule explicitly exempts command labels
+     * from (state labels are the ones that must clear 24 px).
+     *
+     * The button becomes a column to hold it. Native `ToolIcon` is a
+     * horizontal `inline-flex`, so this is the one structural override in the
+     * file; everything else is colour and size.
+     */
+    .ToolIcon:has(.ToolIcon__caption) {
+      flex-direction: column;
+      gap: 4px;
+      justify-content: center;
+      min-width: 52px;
+      padding: 5px 6px 6px;
+      border-radius: 10px;
+    }
+
+    .ToolIcon__caption {
+      font-size: 14px;
+      font-weight: 400;
+      line-height: 18px;
+      white-space: nowrap;
+      color: var(--et-shellbar-caption);
+    }
+
+    .ToolIcon[aria-pressed="true"] .ToolIcon__caption,
+    .ToolIcon_type_radio:checked + .ToolIcon__icon + .ToolIcon__caption,
+    .ToolIcon--easyteach-active .ToolIcon__caption {
+      color: var(--et-shellbar-active-label);
+    }
+
+    .ToolIcon[aria-disabled="true"] .ToolIcon__caption {
+      color: var(--et-shellbar-label-muted);
+    }
+  }
+
+  /*
+   * The mobile DOM tree (`MobileMenu`), which is a genuinely different tree —
+   * not a media query on the same one. Excalidraw switches to it on frame size,
+   * `width < 730 || (height < 500 && width < 1000)`, measured on the board
+   * frame rather than the window, so opening a side panel can flip it
+   * mid-lesson.
+   *
+   * `ShapesSwitcher` is shared, so the tools and captions are already here.
+   * What is not shared is that at 360 px the row genuinely does not fit, and an
+   * overflowing row that gives no sign it scrolls is a row whose last commands
+   * do not exist as far as the teacher is concerned.
+   */
+  .App-toolbar--mobile {
+    position: relative;
+    display: flex;
+    overflow-x: auto;
+    scrollbar-width: none;
+
+    &::-webkit-scrollbar {
+      width: 0;
+      height: 0;
+      display: none;
+    }
+
+    /*
+     * A fade alone is not enough at 2 m, so the fade carries a chevron. Drawn
+     * with a mask rather than an extra element because this toolbar's markup
+     * comes from upstream and adding a node to it would widen the fork delta
+     * NFR-MAINT-12 asks to keep reviewable.
+     */
+    &::after {
+      content: "";
+      position: sticky;
+      right: 0;
+      flex: 0 0 auto;
+      align-self: stretch;
+      width: 38px;
+      margin-left: -38px;
+      pointer-events: none;
+      background: linear-gradient(
+        90deg,
+        transparent,
+        var(--et-shellbar-surface) 62%
+      );
+    }
   }
 }
