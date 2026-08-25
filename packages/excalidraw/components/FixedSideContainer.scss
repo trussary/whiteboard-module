@@ -20,6 +20,48 @@
   .FixedSideContainer_side_top.zen-mode {
     right: 42px;
   }
+
+  /*
+   * EasyTeach's addition (F-22, FR-22-30) — the bottom half of the
+   * top/bottom shell flip. See
+   * `specs/003-board-shell-fork/contracts/toolbar-position-contract.md`.
+   *
+   * This is the same full-container inset box as `_side_top`, not a
+   * bottom-anchored strip (`top: auto`) that would read as a "mirrored
+   * flip". `.FixedSideContainer` never paints anything or claims pointer
+   * events itself (`pointer-events: none` above) — every existing side
+   * variant is a transparent, full-bleed hit-test pass-through, and the
+   * *consumer's* own wrapper class decides where within that box its
+   * children actually pack (e.g. `.App-top-bar` in `css/styles.scss` uses
+   * `flex-direction: column; align-items: center` to pull content to the
+   * box's top edge; a bottom-flipped consumer packs its children toward
+   * the box's bottom edge the same way). Insetting only from the bottom
+   * edge would collapse this box's own height to its content instead of
+   * the full editor area, which is a different — and wrong — layout, not
+   * a cosmetic difference from `_side_top`.
+   *
+   * No-collision guarantee with existing bottom-edge content: the mobile
+   * toolbar (`.App-bottom-bar`, rendered by `MobileMenu.tsx`) is a
+   * sibling absolutely-positioned overlay, not a child of
+   * `.FixedSideContainer` — it shares the same `--zIndex-layerUI: 4`
+   * stacking level as `.App-top-bar` and is kept apart from it purely by
+   * `align-items: flex-end` in its own rule (`css/styles.scss`), the same
+   * pattern this box relies on. The drag-to-reveal handle (F-22 §5) does
+   * not exist in this fork yet — nothing here can collide with it today —
+   * and because this box is pointer-events-none and claims no visual
+   * space of its own, a future handle rendered as a sibling cannot be
+   * intercepted or covered by it either.
+   */
+  .FixedSideContainer_side_bottom {
+    left: var(--editor-container-padding);
+    top: var(--editor-container-padding);
+    right: var(--editor-container-padding);
+    bottom: var(--editor-container-padding);
+  }
+
+  .FixedSideContainer_side_bottom.zen-mode {
+    right: 42px;
+  }
 }
 
 /* TODO: if these are used, make sure to implement RTL support
