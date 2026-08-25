@@ -154,10 +154,31 @@
       border-radius: 10px;
     }
 
+    /*
+     * D1 — the icon itself, not just its caption, needs a colour rule.
+     *
+     * This block only sets width/height; with no `color` of its own the icon
+     * falls through to upstream `ToolIcon.scss`'s `color: var(--icon-fill-color)`,
+     * which tracks Excalidraw's own light/dark flag rather than the active
+     * EasyTeach board face (FR-002) — dark-on-dark on the black face. The three
+     * rules below mirror the `.ToolIcon__caption` colour rules two rules down
+     * (base / aria-pressed / aria-disabled), on the same `--et-shellbar-*`
+     * tokens, so the icon and its caption always agree on contrast (FR-001,
+     * FR-003).
+     */
     .ToolIcon:has(.ToolIcon__caption) .ToolIcon__icon {
       width: 24px;
       height: 24px;
       min-height: 24px;
+      color: var(--et-shellbar-caption);
+    }
+
+    .ToolIcon[aria-pressed="true"]:has(.ToolIcon__caption) .ToolIcon__icon {
+      color: var(--et-shellbar-active-label);
+    }
+
+    .ToolIcon[aria-disabled="true"]:has(.ToolIcon__caption) .ToolIcon__icon {
+      color: var(--et-shellbar-label-muted);
     }
 
     /*
