@@ -18,6 +18,31 @@
  */
 
 .excalidraw {
+  /*
+   * The toolbar island itself.
+   *
+   * Excalidraw's `.Island` paints from its own CSS custom properties, which
+   * know nothing about which board face is active — so on the black face the
+   * island came out at 1,15:1 against the board behind it. Design change A3
+   * puts every persistent chrome surface on the EasyTeach tier-3 tokens
+   * instead, which flip to a light treatment on that face while the command
+   * wheel deliberately stays dark (a Ø 408 px pale disc glares during evening
+   * study; a toolbar strip does not).
+   */
+  .App-toolbar {
+    background: var(--et-shellbar-surface);
+    color: var(--et-shellbar-label);
+    border: 1px solid var(--et-shellbar-rim);
+    border-radius: 12px;
+    box-shadow: var(--et-shell-shadow-md);
+    padding: 5px;
+    gap: 2px;
+  }
+
+  .App-toolbar__divider {
+    background: var(--et-shellbar-divider);
+  }
+
   .App-toolbar {
     /*
      * NFR-UX-03: every control is at least 44 px.
@@ -115,8 +140,37 @@
       gap: 4px;
       justify-content: center;
       min-width: 52px;
+      /*
+       * The 44 px floor moves to the whole button once it has two rows, and
+       * the icon box shrinks to the design's 24 px to carry it. Left at the
+       * native 36 px the button came out 69 px tall, which is not a
+       * NFR-UX-03 failure — it is over the floor — but it overflowed the
+       * island's own padding and clipped the descenders off "Chọn" and
+       * "Giải bài". A caption that loses its diacritics is worse than no
+       * caption at all (NFR-I18N-01).
+       */
+      min-height: 52px;
       padding: 5px 6px 6px;
       border-radius: 10px;
+    }
+
+    .ToolIcon:has(.ToolIcon__caption) .ToolIcon__icon {
+      width: 24px;
+      height: 24px;
+      min-height: 24px;
+    }
+
+    /*
+     * The numeric shortcut badge, hidden.
+     *
+     * F-22 states the rule plainly and `DockSlotBase.shortcut` repeats it: a
+     * shortcut belongs in the tooltip, never on the button face. It is also
+     * absolutely positioned in the bottom-right corner, which is exactly where
+     * the caption now is — so leaving it would print "Chọn 1" on top of itself.
+     * The key still works; the tooltip still names it.
+     */
+    .ToolIcon__keybinding {
+      display: none;
     }
 
     .ToolIcon__caption {

@@ -661,9 +661,20 @@ export type EasyTeachToolbarItem = {
 export type UIOptions = Partial<{
   dockedSidebarBreakpoint: number;
   canvasActions: CanvasActions;
-  tools: {
-    image: boolean;
-  };
+  /**
+   * Which tools the toolbar offers. Omitted or `true` shows the tool.
+   *
+   * **Widened from `{ image: boolean }` to every `ToolType`, and the mechanism
+   * was already here.** `ShapesSwitcher` has always skipped a shape whose entry
+   * is `false`; only the *type* restricted that to `image`, so every other tool
+   * was unhideable through the documented API and could be removed only by
+   * hiding it with CSS afterwards — which is the practice ADR-023 exists to end.
+   *
+   * EasyTeach uses it to keep one shape on the toolbar face and move the rest
+   * into the command wheel's shape folder, so a teacher meets one "Hình" button
+   * rather than five near-identical geometry icons (F-22 §4.4).
+   */
+  tools: Partial<Record<ToolType, boolean>>;
   /**
    * EasyTeach's additions to the native toolbar (ADR-023, FR-22-25).
    *

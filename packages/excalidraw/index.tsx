@@ -64,8 +64,19 @@ const ExcalidrawBase = (props: ExcalidrawProps) => {
       ...DEFAULT_UI_OPTIONS.canvasActions,
       ...canvasActions,
     },
+    /*
+     * Spread the caller's whole map, not just `image`.
+     *
+     * This line used to rebuild `tools` from a single key, which silently
+     * discarded every other entry — so `ShapesSwitcher`'s own
+     * `UIOptions.tools?.[value] === false` check, which has always been able to
+     * hide any tool, could only ever be reached for `image`. Hiding anything
+     * else meant covering it with CSS afterwards, which is the practice
+     * ADR-023 exists to end.
+     */
     tools: {
-      image: props.UIOptions?.tools?.image ?? true,
+      ...DEFAULT_UI_OPTIONS.tools,
+      ...props.UIOptions?.tools,
     },
   };
 
