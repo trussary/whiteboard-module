@@ -38,12 +38,12 @@
     "arrowhead_none": "Không",
     "arrowhead_arrow": "Mũi tên",
     "arrowhead_bar": "Thanh",
-    "arrowhead_circle": "",
-    "arrowhead_circle_outline": "",
+    "arrowhead_circle": "Tròn",
+    "arrowhead_circle_outline": "Tròn (viền)",
     "arrowhead_triangle": "Tam giác",
-    "arrowhead_triangle_outline": "",
-    "arrowhead_diamond": "",
-    "arrowhead_diamond_outline": "",
+    "arrowhead_triangle_outline": "Tam giác (viền)",
+    "arrowhead_diamond": "Hình thoi",
+    "arrowhead_diamond_outline": "Hình thoi (viền)",
     "fontSize": "Cỡ chữ",
     "fontFamily": "Phông chữ",
     "addWatermark": "Làm với Excalidraw\"",
@@ -119,8 +119,8 @@
       "create": "Tạo liên kết",
       "createEmbed": "",
       "label": "Liên kết",
-      "labelEmbed": "",
-      "empty": ""
+      "labelEmbed": "Liên kết nhúng",
+      "empty": "Chưa có liên kết."
     },
     "lineEditor": {
       "edit": "Điều chỉnh nét",
