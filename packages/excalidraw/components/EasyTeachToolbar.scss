@@ -62,9 +62,50 @@
       background: var(--et-shellbar-hover);
     }
 
-    .ToolIcon[aria-pressed="true"] {
+    /*
+     * `:has(> .ToolIcon_type_radio:checked)` alongside `[aria-pressed="true"]`:
+     * upstream's own checked-radio styling (`toolbarButtonColorStates`) only
+     * colours the inner `.ToolIcon__icon` div, not this outer label/button —
+     * so without this, a native tool's active state is a small coloured
+     * circle around just the icon while an `aria-pressed` EasyTeach button's
+     * is a full pill across icon-plus-caption. Same background token, same
+     * shape, for every active toolbar item regardless of which native
+     * mechanism it uses underneath.
+     */
+    .ToolIcon[aria-pressed="true"],
+    .ToolIcon:has(> .ToolIcon_type_radio:checked),
+    .ToolIcon:has(> .ToolIcon_type_checkbox:checked) {
       background: var(--et-shellbar-active-surface);
       color: var(--et-shellbar-active-label);
+    }
+
+    /*
+     * The native shape-selector tools (Chọn, Hình, Bút, Chữ, Ảnh, Tẩy) are
+     * radio inputs, not `aria-pressed` buttons — `toolbarButtonColorStates`
+     * (`css/variables.module.scss`) styles their checked *background* on its
+     * own `--color-surface-primary-container` token, upstream's own theme
+     * token, entirely uncoordinated with the `--et-shellbar-active-*` tokens
+     * the rule above uses for EasyTeach's own `aria-pressed` buttons. Left
+     * alone, that is two different active-state treatments on the same
+     * toolbar (FR-001/FR-003's contrast intent applies to every state, not
+     * just the resting one). Only `background` (and the `--icon-fill-color`
+     * custom property, for a fill-based icon elsewhere in the native set) are
+     * set here — the checked-state *text/icon* colour is handled by the
+     * `:has(.ToolIcon__caption)` active-colour rule below instead of here,
+     * deliberately: that rule and this file's D1 base-colour rule are both
+     * unconditional on every toolbar icon (every icon has a caption, design
+     * change A2), so a `color`/`svg{color}` override here would tie in
+     * specificity with that rule and lose on source order — see the comment
+     * on that rule for why the checked-radio selector is added there instead.
+     */
+    .ToolIcon_type_radio:checked + .ToolIcon__icon,
+    .ToolIcon_type_checkbox:checked + .ToolIcon__icon {
+      background: var(--et-shellbar-active-surface);
+      --icon-fill-color: var(--et-shellbar-active-label);
+
+      svg {
+        fill: var(--icon-fill-color);
+      }
     }
 
     /*
@@ -157,28 +198,61 @@
     /*
      * D1 — the icon itself, not just its caption, needs a colour rule.
      *
-     * This block only sets width/height; with no `color` of its own the icon
-     * falls through to upstream `ToolIcon.scss`'s `color: var(--icon-fill-color)`,
-     * which tracks Excalidraw's own light/dark flag rather than the active
-     * EasyTeach board face (FR-002) — dark-on-dark on the black face. The three
-     * rules below mirror the `.ToolIcon__caption` colour rules two rules down
-     * (base / aria-pressed / aria-disabled), on the same `--et-shellbar-*`
-     * tokens, so the icon and its caption always agree on contrast (FR-001,
-     * FR-003).
+     * With no `color` of its own the icon falls through to upstream
+     * `ToolIcon.scss`'s `color: var(--icon-fill-color)`, which tracks
+     * Excalidraw's own light/dark flag rather than the active EasyTeach board
+     * face (FR-002) — dark-on-dark on the white face. The three rules below
+     * mirror the `.ToolIcon__caption` colour rules two rules down (base /
+     * aria-pressed / aria-disabled), on the same `--et-shellbar-*` tokens, so
+     * the icon and its caption always agree on contrast (FR-001, FR-003).
+     *
+     * The icon's visible colour is its inner `<svg>`'s `stroke="currentColor"`
+     * (a Tabler-style outline icon, `fill="none"`), not the `.ToolIcon__icon`
+     * div directly — and `ToolIcon.scss` sets `color` a second time on that
+     * nested `svg` (`.ToolIcon__icon svg { color: var(--icon-fill-color) }`,
+     * the same pattern the upstream `.fillable`/`:checked`/`:disabled` states
+     * use for their own svg colour overrides). A rule on the div alone never
+     * reaches the svg: CSS only inherits a property down when nothing sets it
+     * directly on the descendant, regardless of the ancestor rule's
+     * specificity. Each block below must therefore also set `svg { color:
+     * inherit }` to actually override that nested rule.
+     *
+     * `:has(.ToolIcon__caption)` matches every toolbar icon, not a captioned
+     * subset — design change A2 puts a caption under every icon, native tools
+     * (Chọn, Hình, …) included. That is deliberate here: it is what makes the
+     * pressed-state rule below double as the checked-radio active rule for
+     * native tools too (added as a second selector, not a separate block —
+     * a separate block earlier in this file ties in specificity with this one
+     * and loses on source order; see the comment on the checked-radio
+     * background rule above).
      */
     .ToolIcon:has(.ToolIcon__caption) .ToolIcon__icon {
       width: 24px;
       height: 24px;
       min-height: 24px;
       color: var(--et-shellbar-caption);
+
+      svg {
+        color: inherit;
+      }
     }
 
-    .ToolIcon[aria-pressed="true"]:has(.ToolIcon__caption) .ToolIcon__icon {
+    .ToolIcon[aria-pressed="true"]:has(.ToolIcon__caption) .ToolIcon__icon,
+    .ToolIcon:has(.ToolIcon__caption) .ToolIcon_type_radio:checked + .ToolIcon__icon,
+    .ToolIcon:has(.ToolIcon__caption) .ToolIcon_type_checkbox:checked + .ToolIcon__icon {
       color: var(--et-shellbar-active-label);
+
+      svg {
+        color: inherit;
+      }
     }
 
     .ToolIcon[aria-disabled="true"]:has(.ToolIcon__caption) .ToolIcon__icon {
       color: var(--et-shellbar-label-muted);
+
+      svg {
+        color: inherit;
+      }
     }
 
     /*
