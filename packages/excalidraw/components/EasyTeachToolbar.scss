@@ -33,8 +33,26 @@
     background: var(--et-shellbar-surface);
     color: var(--et-shellbar-label);
     border: 1px solid var(--et-shellbar-rim);
-    border-radius: 12px;
     box-shadow: var(--et-shell-shadow-md);
+    /*
+     * specs/004-shadcn-ui-migration T059 — the radius scale comes from the
+     * template now, not from a value chosen here. This is the template's
+     * outermost step, `--radius-xl` (14 px at the 0.625rem base), and every
+     * other floating surface in the product sits on it.
+     *
+     * **Written as the formula, not as `var(--radius-xl)`, and that is not a
+     * style choice.** `packages/ui/src/styles/themes.css` declares the four
+     * steps inside `@theme inline`, and Tailwind v4 resolves an `inline` theme
+     * block at compile time — it substitutes the value into the utilities it
+     * generates and never emits `--radius-lg` / `--radius-xl` as runtime custom
+     * properties. Verified against the built stylesheet: `--radius: .625rem` is
+     * there, the four derived steps are not. Referencing them from hand-written
+     * CSS like this file therefore always falls through to the fallback, which
+     * would have left this rule at its pre-migration 12 px while reading as
+     * though it had been migrated. `--radius` itself is declared in a plain
+     * `:root` block and is emitted, so the formula resolves.
+     */
+    border-radius: calc(var(--radius, 0.625rem) + 4px);
     padding: 5px;
     gap: 2px;
   }
@@ -192,7 +210,11 @@
        */
       min-height: 52px;
       padding: 5px 6px 6px;
-      border-radius: 10px;
+      /* `--radius-lg` is the template's base step — plain `--radius`, and it
+         lands on the same 10 px this button already used, so this is a move
+         onto the scale rather than a resize. See the island rule above for why
+         the derived step names cannot be referenced from a stylesheet. */
+      border-radius: var(--radius, 0.625rem);
     }
 
     /*
